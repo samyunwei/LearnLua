@@ -113,3 +113,27 @@ if a < b then
     print(a)
 end
 print(a,b)
+
+
+print("P33")
+days = {
+    "sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
+}
+revdays = {
+    ["sunday"]=1,["Monday"]=2,["Tuesday"]=3,["Wednesday"]=4,["Thursday"]=5,["Friday"]=6,["Saturday"]=7
+}
+
+x = "Tuesday"
+print(revdays[x])
+
+revdays = {
+    
+}
+
+for k,v in pairs(days) do
+    revdays[v] = k
+end
+
+for k,v in pairs(days) do
+    print(v)
+end
