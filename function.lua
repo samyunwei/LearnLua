@@ -122,3 +122,28 @@ print(foo(3))
 print((foo(1)))
 print((foo(2)))
 print((foo(0)))
+
+
+print "P40"
+
+function add(...)
+    local s = 0
+    for i,v in ipairs{
+...
+    } do
+        s = s+v
+    end
+    return s
+end
+
+print(add(3,4,10,25,12))
+
+print "P41"
+
+function fwrite(fmt,...)
+    return io.write(string.format(fmt,...))
+end
+
+--fwrite()
+fwrite("a")
+fwrite("%d%d",4,5)
