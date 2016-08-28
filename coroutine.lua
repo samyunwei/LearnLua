@@ -125,7 +125,7 @@ permgen({
     1,2,3,4
 })
 --]]
-
+--[[
 function permgen(a,n)
     n = n or #a
     if n <= 1 then 
@@ -138,7 +138,7 @@ function permgen(a,n)
         end
     end
 end
---[[
+
 function permutations(a)
     local co = coroutine.create(function() permgen(a) end)
     return function() 
@@ -146,7 +146,7 @@ function permutations(a)
         return res
     end
 end
---]]
+
 function permutations (a)
     return coroutine.wrap(function() permgen(a) end)
 end
@@ -161,3 +161,122 @@ end
 for p in permutations{"a","b","c"} do
     printResult(p)
 end
+
+--]]
+--[[
+socket = require("socket")
+host = "www.w3.org"
+file = "/TR/REC-html.html"
+c = assert(socket.connect(host,80))
+c:send("GET " .. file .. " HTTP/1.0\r\n\r\n")
+while true do
+    local s,status,partial = c:receive(2^10)
+    io.write(s or partial)
+    if status == "closed" then break end
+end
+c:close()
+--]]
+
+socket = require("socket")
+
+function receive(connection)
+    connection:settimeout(0)
+    local s,status,partial = connection:receive(2^10)
+    if status == "timeout" then
+        coroutine.yield(connection)
+    end
+    return s or partial,status
+end
+
+
+function download(host,file)
+    local c = assert(socket.connect(host,80))
+    local count = 0
+    c:send("GET " .. file .. " HTTP/1.0\r\n\r\n")
+    while true do
+        local s,status,partial = receive(c)
+        count = count + #(s or partial)
+        if status == "closed" then break end
+    end
+    c:close()
+    print(file,count)
+end
+
+function get(host,file)
+    local co = coroutine.create(function()
+        download(host,file)
+    end)
+    table.insert(threads,co)
+end
+
+
+function dispatch()
+    local i = 1
+    while true do
+        if threads[i] == nil then
+            if threads[1] == nil then break end
+            i = 1
+        end
+        local status,res = coroutine.resume(threads[i])
+        if not res then
+            table.remove(threads,i)
+        else
+                i = i+1
+        end
+    end
+end
+
+function dispatch2()
+    local i = 1
+    local connections = {}
+    while true do
+        if threads[i] == nil then
+            if threads[1] == nil then break end
+            i = 1
+            connections = {}
+        end
+        local status ,res = coroutine.resume(threads[i])
+        if not res then
+            table.remove(threads,i)
+        else
+            i = i+1
+            connections[#connections + 1] = res
+            if #connections == #threads then
+                socket.select(connections)
+            end
+        end
+    end
+end
+
+
+threads = {}
+
+
+host = "www.w3.org"
+
+get(host,"/TR/html401/html40.txt")
+get(host,"TR/2002/REC-xhtml1-20020801/xhtml1.pdf")
+get(host,"/TR/REC-html.html")
+get(host,"TR/2000/REC-DOM-Level-2-Core-20001113/DOM2-Core.txt")
+
+dispatch2()
+--[[
+test = {
+
+}
+function inner()
+    local i = 1
+    print(i)
+    i = i+1
+end
+
+function test2()
+    local co = coroutine.create(function()
+        inner()
+        print("this is test")
+    end)
+    table.insert(test,co)
+end
+test2()
+print(coroutine.resume(test[1]))
+--]]
