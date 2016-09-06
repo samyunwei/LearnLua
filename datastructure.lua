@@ -131,7 +131,7 @@ end
 t[#t+1] = ""
 s = table.concat(t,"\n")
 --]]
-
+--[[
 function addString(stack,s)
     stack[#stack + 1] = s
     for i = #stack-1,1,-1 do
@@ -142,5 +142,46 @@ function addString(stack,s)
         stack[i+1] = nil
     end
 end
+--]]
+local function name2node(graph,name)
+    if not graph[name] then
+        graph[name] = {
+            name = name,
+            adj = {
+            }
+        }
+    end
+    return graph[name]
+end
 
+function readgraph()
+    local graph = {
+    }
+    for line in io.lines() do
+        local namefrom,nameto = string.match(line,"(%S+)%s+(%S+)")
+        local from = name2node(graph,namefrom)
+        local to = name2node(graph,nameto)
+        from.adj[to] = true
+    end
+    return graph
+end
+
+function findpath(curr,to,path,visited)
+    path = path or {
+    }
+    visited = visited or {}
+    if visited[curr] then
+        return nil
+    end
+    visited[curr] = true
+    path[#path +1] = curr
+    if curr == to then
+        return path
+    end
+    for node in pairs(curr.adj) do
+        local p = findpath(node,to,path,visited)
+        if p then return p end
+    end
+        path[#path] = nil
+    end
 
