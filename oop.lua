@@ -16,6 +16,20 @@ function Account:deposit(v)
     self.balance = self.balance + v
 end
 
+function Account:new(o)
+    o = o or {}
+    setmetatable(o,self)
+    self.__index = self
+    return o
+end
+--[[
 Account.deposit(Account,200.00)
 Account:withdraw(100.00)
 print(Account.balance)
+--]]
+
+a = Account:new{
+    balance = 0
+}
+a:deposit(100.00)
+print(a.balance)
