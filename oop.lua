@@ -175,3 +175,6 @@ d = newObject(0)
 print(d("get"))
 d("set",10)
 print(d("get"))
+
+
+
