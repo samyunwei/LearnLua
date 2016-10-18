@@ -61,7 +61,7 @@ end
 
 --]]
 
-
+--[[
 function rconcat(l)
     if type(l) ~= "table" then return l end
     local res = {
@@ -89,3 +89,9 @@ print(rconcat{
     }
 }
 })
+
+--]]
+
+
+s = "[in brachkets]"
+print(string.sub(s,2,-2))
