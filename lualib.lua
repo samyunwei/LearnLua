@@ -92,6 +92,23 @@ print(rconcat{
 
 --]]
 
-
+--[[
 s = "[in brachkets]"
 print(string.sub(s,2,-2))
+--]]
+--[[
+print(string.char(97))
+i = 99;
+print(string.char(i,i+1,i+2))
+print(string.byte("abc"))
+print(string.byte("abc",2))
+print(string.byte("abc",-1))
+print(string.byte("abc",1,2))
+--]]
+
+print(string.format("pi = %.4f",math.pi))
+d = 5;m = 11;y = 1990
+print(string.format("%02d/%02d/%04d",d,m,y))
+tag,title = "h1","a title"
+print(string.format("<%s>%s</%s>",tag,title,tag))
+
