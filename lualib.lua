@@ -105,10 +105,36 @@ print(string.byte("abc",2))
 print(string.byte("abc",-1))
 print(string.byte("abc",1,2))
 --]]
-
+--[[
 print(string.format("pi = %.4f",math.pi))
 d = 5;m = 11;y = 1990
 print(string.format("%02d/%02d/%04d",d,m,y))
 tag,title = "h1","a title"
 print(string.format("<%s>%s</%s>",tag,title,tag))
+--]]
+
+--[[
+s = "hello world"
+i,j = string.find(s,"hello")
+print(i,j)
+print(string.sub(s,i,j))
+print(string.find(s,"world"))
+i,j = string.find(s,"l")
+print(i,j)
+print(string.find(s,"lll"))
+--]]
+function calcsentence(s)
+local t = {
+
+}
+
+local i = 0
+while true do
+    i = string.find(s,"\n",i+1)
+    if i == nil then break end
+    t[#t+1] = i
+end
+end
+
+
 
