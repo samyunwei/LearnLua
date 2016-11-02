@@ -123,6 +123,7 @@ i,j = string.find(s,"l")
 print(i,j)
 print(string.find(s,"lll"))
 --]]
+--[[
 function calcsentence(s)
 local t = {
 
@@ -135,6 +136,52 @@ while true do
     t[#t+1] = i
 end
 end
+--]]
+
+--[[
+print(string.match("hello world","hello"))
+
+date= "Today is 17/7/1990"
+d = string.match(date,"%d+/%d+/%d+")
+print(d)
+
+--]]
+
+--[[
+s = string.gsub("Lua is cute","cute","great")
+print(s)
+s = string.gsub("all lii","l","x")
+print(s)
+s = string.gsub("Lua is great","Sol","Sun")
+print(s)
+s = string.gsub("all lii","l","x",1)
+s = string.gsub("all lii","l","x",1)
+print(s)
+s = string.gsub("all lii","l","x",2)
+print(s)
+--]]
+
+--[[
+words = {
+
+}
+
+for w in string.gmatch(s,"%a+") do
+    words[#word+1] = w
+end
+--]]
 
 
+function search(modname,path)
+    modname = string.gsub(modname,"%.","/")
+    for c in string.gmatch(path,"[^;]+") do
+        local fname = string.gsub(c,"?",modname)
+        local f = io.open(fname)
+        if f then
+            f:close()
+            return fname
+        end
+    end
+    return nil
+end
 
