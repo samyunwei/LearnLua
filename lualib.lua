@@ -171,7 +171,7 @@ for w in string.gmatch(s,"%a+") do
 end
 --]]
 
-
+--[[
 function search(modname,path)
     modname = string.gsub(modname,"%.","/")
     for c in string.gmatch(path,"[^;]+") do
@@ -183,5 +183,165 @@ function search(modname,path)
         end
     end
     return nil
+end
+--]]
+
+--[[
+print(string.gsub("hello, up-down!","%A","."))
+print(string.gsub("one, and two;and three","%a+","word"))
+print(string.match("the number 1298 is even","%d+"))
+
+test = "int x;/* x */ int y; /* y */"
+print(string.gsub(test,"/%*.*%*/","<COMMENT>"))
+print(string.gsub(test,"/%*.-%*/","<COMMENT>"))
+
+s = "a (enclosed (in) parenttheses) line"
+print(string.gsub(s,"%b()",""))
+
+--]]
+--[[
+pair = "name = Anna"
+key,value = string.match(pair,"(%a+)%s*=%s*(%a+)")
+print(key,value)
+
+
+date = "Today is 17/7/1990"
+d,m,y = string.match(date,"(%d+)/(%d+)/(%d+)")
+print(d,m,y)
+
+
+s = [[then he said:"it's all right"!]]
+--[[
+q,qutoedPart = string.match(s,"([\"'])(.-)%1")
+print(qutoedPart)
+print(q)
+
+
+p = "%[(=*)%[(.-)%]%1%]"
+--]]
+
+--s = "a = [=[[[ something ]] ]==] ]=];print(a)"
+--[[
+print(string.match(s,p))
+
+print(string.gsub("hello Lua!","%a","%0-%0"))
+
+print(string.gsub("hello Lua","(.)(.)","%2%1"))
+
+--]]
+--[[
+s = "the \\quote{task} is to \\em{change} that"
+s = string.gsub(s,"\\(%a+){(.-)}","<%1>%2</%1>")
+print(s)
+
+function trim(s)
+    return (string.gsub(s,"^%s*(.-)%s*$","%1"))
+end
+
+--]]
+
+--[[
+function expand(s)
+    return (string.gsub(s,"$(%w+)",_G))
+end
+
+name = "Lua";status = "great"
+print(expand("$name is $status,isn't it?'"))
+print(expand("$othername is $status,isn't it?'"))
+
+--]]
+--[[
+function expand(s)
+    return (string.gsub(s,"$(%w+)",function(n)
+        return tostring(_G[n])
+    end))
+end
+
+print(expand("print = $print;a = $a"))
+--]]
+--[[
+function toxml(s)
+    s = string.gsub(s,"\\(%a+)(%b{})",function(tag,body)
+        body = string.sub(body,2,-2)
+        body = toxml(body)
+        return string.format("<%s>%s</%s>",tag,body,tag)
+    end)
+    return s
+end
+
+print(toxml("\\title{The \\bold{big} example}"))
+--]]
+--[[
+function unescape(s)
+    s = string.gsub(s,"+"," ")
+    s = string.gsub(s,"%%(%x%x)",function(h)
+        return string.char(tonumber(h,16))
+    end)
+    return s
+end
+
+print(unescape("a%2Bb+%3D+c"))
+
+
+cgi = {
+
+}
+function decode(s)
+    for name,value in string.gmatch(s,"([^&=]+)=([^&=]+)") do
+        name = unspace(name)
+        value = unescape(value)
+        cgi[name] = value
+    end
+end
+
+
+function escape(s)
+    s = string.gsub(s,"[&=+%%%c]",function (c)
+        return string.format("%%%02X",string.byte(c))
+    end)
+    s = string.gsub(s," ","+")
+    return s
+end
+
+function encode(t)
+    local b = {
+
+    }
+    for k,v in pairs(t) do
+        b[#b+1] = (escape(k) .. "=" .. escape(v))
+    end
+    return table.concat(b,"&")
+end
+
+t = {
+    name = "al",
+    query = "a+b = c",
+    q = "yes or no"
+}
+print(encode(t))
+--]]
+
+print(string.match("hello","()ll()"))
+
+
+function expandTabs(s,tab)
+    tab = tab or 8
+    local corr = 0
+    s = string.gsub(s,"()\t",function(p)
+        local sp = tab - (p -1 + corr) %tab
+        corr = corr -1 +sp
+        return string.rep(" ",sp)
+    end)
+    return s
+end
+
+function unexpandTabs(s,tab)
+    tab = tab or 8
+    s = expandTabs(s)
+    local pat = string.rep(".",tab)
+    s = string.gsub(s,pat,"%0\1")
+    s = string.gsub(s," +\1","\t")
+    s = string.gsub(s,"\1","")
+    return s
 end
 
