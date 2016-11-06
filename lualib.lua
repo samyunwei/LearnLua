@@ -320,7 +320,7 @@ t = {
 }
 print(encode(t))
 --]]
-
+--[[
 print(string.match("hello","()ll()"))
 
 
@@ -344,4 +344,43 @@ function unexpandTabs(s,tab)
     s = string.gsub(s,"\1","")
     return s
 end
+--]]
 
+
+test = [[char s[] = "a /* here"; /* a tricky string */"]]
+print(string.gsub(test,"/%*.-%*/","<COMMENT>"))
+
+
+i,j = string.find(";$% **#$hello1","%a*")
+print(i,j)
+
+pattern = string.rep("[^\n]",70) .. "[^\n]"
+function nocase(s)
+    s = string.gsub(s,"%a",function(c)
+        return "[" .. string.lower(c) .. string.upper(c) .. "]"
+    end)
+    return s
+end
+
+print(nocase("Hi there!"))
+
+function code(s)
+    return (string.gsub(s,"\\(.)",function(x)
+        return string.format("\\%03d",string.byte(x))
+    end))
+end
+
+
+function decode(s)
+    return (string.gsub(s,"\\(%d%d%d)",function(d)
+        return "\\" .. string.char(d)
+    end))
+end
+
+
+s = [[follows typecial string:"This is \"great\"!".]]
+s = code(s)
+s = string.gsub(s,'".-"',string.upper)
+s = decode(s)
+print(s)
+print(decode(string.gsub(code(s),'".-"',string.upper)))
