@@ -4,6 +4,7 @@
 --# mail: samyunwei@163.com
 --# Created Time: 2016年11月15日 星期二 23时58分18秒
 --#########################################################################
+--[[
 print(os.time{
     year = 1970,month = 1,day = 1,hour = 0
 })
@@ -19,3 +20,17 @@ local x = os.clock()
 local s = 0
 for i = 1,10000 do s = s + i end
 print(string.format("elapsed time: %.2f\n",os.clock() - x))
+--]]
+
+
+print(os.getenv("HOME"))
+
+function createDir(dirname)
+    os.execute("mkdir" .. dirname)
+end
+
+--print(os.setlocale("ISO-8859-1","collate"))
+print(os.setlocale("pt_BR"))
+s = "return  (" .. 3.4 .. ")"
+print(s)
+print(loadstring(s))
