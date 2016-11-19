@@ -9,7 +9,7 @@ function allwords()
     local line = io.read()
     local pos = 1
     return function()
-        while line do
+        while line ~= ""  do
             local s,e = string.find(line,"%w+",pos)
             if s then
                 pos = e+1
