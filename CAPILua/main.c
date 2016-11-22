@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <string.h>
 #include "lua.h"
@@ -6,9 +7,11 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 static void stackDump(lua_State *L)
 {
     int i;
@@ -43,6 +46,37 @@ static void stackDump(lua_State *L)
     }
         printf("\n");
 }
+
+void error(lua_State *L,const char *fmt, ...)
+{
+    va_list argp;
+    va_start(argp,fmt);
+    vfprintf(stderr,fmt,argp);
+    va_end(argp);
+    lua_close(L);
+    exit(EXIT_FAILURE);
+}
+
+void load(lua_State *L,const char* fname,int * w,int* h)
+{
+    if(luaL_loadfile(L,fname) || lua_pcall(L,0,0,0))
+    {
+        error(L,"cannot run config.file:%s",lua_tostring(L,-1));
+    }
+    lua_getglobal(L,"width");
+    lua_getglobal(L,"height");
+    if(!lua_isnumber(L,-2))
+    {
+        error(L,"'width' should be a number\n");
+    }
+    if(!lua_isnumber(L,-1))
+    {
+        error(L,"'height' should be a number\n");
+    }
+    *w = lua_tointeger(L,-2);
+    *h = lua_tointeger(L,-1);
+}
+
 int main(void)
 {
 //    printf("Hello World!\n");
@@ -90,17 +124,6 @@ int main(void)
 
     return 0;
 }
-
-//void error(lua_State *L,const char *fmt, ...)
-//{
-//    va_list argp;
-//    va_start(argp,fmt);
-//    vfprintf(stderr,fmt,argp);
-//    va_end(argp);
-//    lua_close(L);
-//    exit(EXIT_FAILURE);
-//}
-
 
 
 #ifdef __cplusplus
