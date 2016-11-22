@@ -48,8 +48,12 @@ OBJECTS_DIR   = ../builds/
 
 ####### Files
 
-SOURCES       = main.c 
-OBJECTS       = ../builds/main.o
+SOURCES       = main.c \
+		Configlua.cpp \
+		CLuaAPI.cpp 
+OBJECTS       = ../builds/main.o \
+		../builds/Configlua.o \
+		../builds/CLuaAPI.o
 DIST          = ../../../../Qt5.5.0/5.5/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../../Qt5.5.0/5.5/gcc_64/mkspecs/common/unix.conf \
 		../../../../Qt5.5.0/5.5/gcc_64/mkspecs/common/linux.conf \
@@ -175,7 +179,10 @@ DIST          = ../../../../Qt5.5.0/5.5/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../../Qt5.5.0/5.5/gcc_64/mkspecs/features/exceptions.prf \
 		../../../../Qt5.5.0/5.5/gcc_64/mkspecs/features/yacc.prf \
 		../../../../Qt5.5.0/5.5/gcc_64/mkspecs/features/lex.prf \
-		CAPILua.pro  main.c
+		CAPILua.pro Configlua.h \
+		CLuaAPI.h main.c \
+		Configlua.cpp \
+		CLuaAPI.cpp
 QMAKE_TARGET  = CAPILua
 DESTDIR       = ../bin/#avoid trailing-slash linebreak
 TARGET        = ../bin/CAPILua
@@ -500,8 +507,16 @@ compiler_clean:
 
 ####### Compile
 
-../builds/main.o: main.c 
+../builds/main.o: main.c Configlua.h \
+		CLuaAPI.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o ../builds/main.o main.c
+
+../builds/Configlua.o: Configlua.cpp Configlua.h \
+		CLuaAPI.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ../builds/Configlua.o Configlua.cpp
+
+../builds/CLuaAPI.o: CLuaAPI.cpp CLuaAPI.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ../builds/CLuaAPI.o CLuaAPI.cpp
 
 ####### Install
 

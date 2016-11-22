@@ -1,100 +1,26 @@
+#include "Configlua.h"
 
-#include <stdio.h>
-#include <string.h>
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-#include <stdarg.h>
-#include <stdlib.h>
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-static void stackDump(lua_State *L)
+void test_newState(void)
 {
-    int i;
-    int top = lua_gettop(L);
-    for(i =1;i<= top;i++)
-    {
-        int t = lua_type(L,i);
-        switch(t)
+        printf("Hello World!\n");
+        char buff[256];
+        int error;
+        lua_State *L = luaL_newstate();
+        luaL_openlibs(L);
+        while(fgets(buff,sizeof(buff),stdin) != NULL)
         {
-        case LUA_TSTRING:
-        {
-            printf(" '%s' ",lua_tostring(L,i));
-            break;
+            error = luaL_loadbuffer(L,buff,strlen(buff),"line") || lua_pcall(L,0,0,0);
+            if(error)
+            {
+                fprintf(stderr,"%s",lua_tostring(L,-1));
+                lua_pop(L,1);
+            }
         }
-           case LUA_TBOOLEAN:
-        {
-            printf(lua_toboolean(L,i) ? "true" : "false");
-            break;
-        }
-        case LUA_TNUMBER:
-        {
-            printf("%g",lua_tonumber(L,i));
-            break;
-        }
-        default:
-        {
-            printf("%s",lua_typename(L,t));
-            break;
-        }
-        }
-            printf(" ");
-    }
-        printf("\n");
+        lua_close(L);
 }
 
-void error(lua_State *L,const char *fmt, ...)
+void testStack(void)
 {
-    va_list argp;
-    va_start(argp,fmt);
-    vfprintf(stderr,fmt,argp);
-    va_end(argp);
-    lua_close(L);
-    exit(EXIT_FAILURE);
-}
-
-void load(lua_State *L,const char* fname,int * w,int* h)
-{
-    if(luaL_loadfile(L,fname) || lua_pcall(L,0,0,0))
-    {
-        error(L,"cannot run config.file:%s",lua_tostring(L,-1));
-    }
-    lua_getglobal(L,"width");
-    lua_getglobal(L,"height");
-    if(!lua_isnumber(L,-2))
-    {
-        error(L,"'width' should be a number\n");
-    }
-    if(!lua_isnumber(L,-1))
-    {
-        error(L,"'height' should be a number\n");
-    }
-    *w = lua_tointeger(L,-2);
-    *h = lua_tointeger(L,-1);
-}
-
-int main(void)
-{
-//    printf("Hello World!\n");
-//    char buff[256];
-//    int error;
-//    lua_State *L = luaL_newstate();
-//    luaL_openlibs(L);
-//    while(fgets(buff,sizeof(buff),stdin) != NULL)
-//    {
-//        error = luaL_loadbuffer(L,buff,strlen(buff),"line") || lua_pcall(L,0,0,0);
-//        if(error)
-//        {
-//            fprintf(stderr,"%s",lua_tostring(L,-1));
-//            lua_pop(L,1);
-//        }
-//    }
-
-//    lua_close(L);
     lua_State *L = luaL_newstate();
 
     lua_pushboolean(L,1);
@@ -120,12 +46,10 @@ int main(void)
     stackDump(L);
 
     lua_close(L);
+}
 
+int main(void)
+{
 
     return 0;
 }
-
-
-#ifdef __cplusplus
-}
-#endif

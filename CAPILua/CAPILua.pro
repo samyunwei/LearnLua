@@ -3,7 +3,9 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.c
+SOURCES += main.c \
+    Configlua.cpp \
+    CLuaAPI.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -20,3 +22,7 @@ RCC_DIR = ../builds
 UI_DIR = ../builds
 UI_HEADERS_DIR = ../builds
 UI_SOURCES_DIR = ../builds
+
+HEADERS += \
+    Configlua.h \
+    CLuaAPI.h
