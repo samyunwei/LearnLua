@@ -1,5 +1,6 @@
 #include "Configlua.h"
 
+
 void test_newState(void)
 {
         printf("Hello World!\n");
@@ -46,6 +47,16 @@ void testStack(void)
     stackDump(L);
 
     lua_close(L);
+}
+
+void testConfig(void)
+{
+    lua_State *L = luaL_newstate();
+    int i = 0;
+    while(colortable[i].name != NULL)
+    {
+        setcolor(L, &colortable[i++]);
+    }
 }
 
 int main(void)

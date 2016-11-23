@@ -12,7 +12,6 @@ extern "C" {
 #include <stdarg.h>
 #include <stdlib.h>
 
-
 void stackDump(lua_State *L);
 void error(lua_State *L,const char *fmt, ...);
 

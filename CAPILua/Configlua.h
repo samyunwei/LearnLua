@@ -1,6 +1,6 @@
 #ifndef CONFIGLUA_H
 #define CONFIGLUA_H
-
+#define MAX_COLOR 255
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -11,12 +11,28 @@ extern "C" {
 #include "lauxlib.h"
 #include <stdarg.h>
 #include <stdlib.h>
-
 #include "CLuaAPI.h"
 
 
-void load(lua_State *L,const char* fname,int * w,int* h);
+#ifndef __COLORENV
+#define __COLORENV
+struct ColorTable
+{
+    char *name;
+    unsigned char red,green,blue;
+}colortable[ ] = {
+{"WHITE" ,MAX_COLOR,MAX_COLOR,MAX_COLOR},
+{"RED",MAX_COLOR,0,0},
+{"GREEN",0,MAX_COLOR,0},
+{"BLUE",0,0,MAX_COLOR},
+{"NULL",0,0,0}
+};
+#endif
 
+void setfield(lua_State *L,const char *index,int value);
+void load(lua_State *L,const char* fname,int * w,int* h);
+int getfield(lua_State *L,const char *key);
+void setcolor(lua_State *L,struct ColorTable *ct);
 #ifdef __cplusplus
 }
 #endif
