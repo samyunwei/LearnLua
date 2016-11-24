@@ -92,7 +92,6 @@ endarg:
         error(L,"error calling '%s' : '%s' ",func,lua_tostring(L,-1));
     }
     va_end(vl);
-
     //select res
     nres = -nres;
     while(*sig)
