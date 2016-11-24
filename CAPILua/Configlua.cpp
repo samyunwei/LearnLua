@@ -85,12 +85,16 @@ void call_va(lua_State *L,const char *func,const char *sig, ...)
     }
 endarg:
 
-    nres = strlen(sig);
 
+
+    nres = strlen(sig);
     if(lua_pcall(L,narg,nres,0) != 0)
     {
         error(L,"error calling '%s' : '%s' ",func,lua_tostring(L,-1));
     }
+
+
+
     va_end(vl);
     //select res
     nres = -nres;
