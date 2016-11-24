@@ -16,7 +16,7 @@ extern "C" {
 
 #ifndef __COLORENV
 #define __COLORENV
-struct ColorTable
+static struct ColorTable
 {
     char *name;
     unsigned char red,green,blue;
@@ -33,6 +33,7 @@ void setfield(lua_State *L,const char *index,int value);
 void load(lua_State *L,const char* fname,int * w,int* h);
 int getfield(lua_State *L,const char *key);
 void setcolor(lua_State *L,struct ColorTable *ct);
+void call_va(const char *func,const char *sig,...);
 #ifdef __cplusplus
 }
 #endif
