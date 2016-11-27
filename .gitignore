@@ -3,4 +3,4 @@
 /builds
 Makefile
 *.pro.user
-
+*.o
