@@ -1,19 +1,19 @@
-/*************************************************************************
-	> File Name: main.c
-	> Author: Sam
-	> Mail: samyunwei@163.com 
-	> Created Time: 六 11/26 21:44:25 2016
- ************************************************************************/
+#ifndef LUACAPI_H
+#define LUACAPI_H
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <stdio.h>
 #include <string.h>
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-#include <math.h>
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 #include <dirent.h>
 #include <errno.h>
 #include <math.h>
+
 static int l_sin(lua_State *L)
 {
     double d = luaL_checknumber(L,1);
@@ -66,6 +66,8 @@ static int l_map(lua_State *L)
 
     return 0;
 }
+
+
 static const struct luaL_Reg mylib[] = {
     {"dir",l_dir},
     {"sin",l_sin},
@@ -79,3 +81,9 @@ int luaopen_mylib(lua_State *L)
     luaL_setfuncs(L,mylib,0);
     return 1;
 }
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // LUACAPI_H

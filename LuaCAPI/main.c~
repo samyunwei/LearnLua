@@ -6,14 +6,13 @@
  ************************************************************************/
 
 #include <stdio.h>
-#include <string.h>
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 #include <math.h>
 #include <dirent.h>
 #include <errno.h>
-#include <math.h>
+
 static int l_sin(lua_State *L)
 {
     double d = luaL_checknumber(L,1);
@@ -54,7 +53,7 @@ static int l_map(lua_State *L)
     luaL_checktype(L,1,LUA_TTABLE);
     luaL_checktype(L,2,LUA_TFUNCTION);
 
-    n = lua_rawlen(L,1);
+    n = lua_objlen(L,1);
 
     for(i = 1;i <= n;i++)
     {
@@ -69,7 +68,6 @@ static int l_map(lua_State *L)
 static const struct luaL_Reg mylib[] = {
     {"dir",l_dir},
     {"sin",l_sin},
-    {"map",l_map},
     {NULL,NULL}
 };
 
