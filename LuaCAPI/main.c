@@ -49,12 +49,12 @@ static int l_dir(lua_State *L)
 
 static const struct luaL_Reg mylib[] = {
     {"dir",l_dir},
+    {"sin",l_sin},
     {NULL,NULL}
 };
 
 int luaopen_mylib(lua_State *L)
 {
-    //luaL_register(L,"mylib",mylib);
     lua_newtable(L);
     luaL_setfuncs(L,mylib,0);
     return 1;
