@@ -6,7 +6,7 @@
 
 QT       -= core gui
 
-TARGET = LuaCAPI
+TARGET = mylib
 TEMPLATE = lib
 
 DEFINES += LUACAPI_LIBRARY

@@ -13,7 +13,8 @@ extern "C" {
 #include <dirent.h>
 #include <errno.h>
 #include <math.h>
-
+#include <ctype.h>
+/*
 static int l_sin(lua_State *L)
 {
     double d = luaL_checknumber(L,1);
@@ -67,6 +68,61 @@ static int l_map(lua_State *L)
     return 0;
 }
 
+static int l_split(lua_State *L)
+{
+    const char *s = luaL_checkstring(L,1);
+    const char *sep = luaL_checkstring(L,2);
+    const char *e;
+    int i = 1;
+
+    lua_newtable(L);
+
+    while((e = strchr(s,*sep)) != NULL)
+    {
+        lua_pushlstring(L,s,e-s);
+        lua_rawseti(L,-2,i++);
+        s = e +1;
+    }
+
+    lua_pushstring(L,s);
+    lua_rawseti(L,-2,i);
+    return 1;
+}
+
+static int str_upper(lua_State *L)
+{
+    size_t l;
+    size_t i;
+    luaL_Buffer b;
+    const char *s = luaL_checklstring(L,1,&l);
+    luaL_buffinit(L,&b);
+    for(i = 0;i<l;i++)
+    {
+        luaL_addchar(&b,toupper((unsigned char)(s[i])));
+    }
+    luaL_pushresult(&b);
+    return 1;
+}
+
+
+static int counter(lua_State *L);
+
+int newCounter(lua_State *L)
+{
+    lua_pushinteger(L,0);
+    lua_pushcclosure(L,&counter,1);
+    return 1;
+}
+
+
+static int counter(lua_State *L)
+{
+    int val = lua_tointeger(L,lua_upvalueindex(1));
+    lua_pushinteger(L,++val);
+    lua_pushvalue(L,-1);
+    lua_replace(L,lua_upvalueindex(1));
+    return 1;
+}
 
 static const struct luaL_Reg mylib[] = {
     {"dir",l_dir},
@@ -82,6 +138,48 @@ int luaopen_mylib(lua_State *L)
     return 1;
 }
 
+*/
+
+int t_tuple(lua_State *L)
+{
+    int op = luaL_optinteger(L,1,0);
+    if(op == 0)
+    {
+        int i = 0;
+        for(i = 1;!lua_isnone(L,lua_upvalueindex(i));i++)
+        {
+            lua_pushvalue(L,lua_upvalueindex(i));
+        }
+        return i-1;
+    }else
+    {
+        luaL_argcheck(L,0<op,1,"indext out of range");
+        if(lua_isnone(L,lua_upvalueindex(op)))
+        {
+            return 0;
+        }
+        lua_pushvalue(L,lua_upvalueindex(op));
+        return 1;
+    }
+}
+
+int t_new(lua_State *L)
+{
+    lua_pushcclosure(L,t_tuple,lua_gettop(L));
+    return 1;
+}
+
+static const struct luaL_Reg mylib[] = {
+   {"new",t_new},
+    {NULL,NULL}
+};
+
+int luaopen_mylib(lua_State *L)
+{
+    lua_newtable(L);
+    luaL_setfuncs(L,mylib,0);
+    return 1;
+}
 #ifdef __cplusplus
 }
 #endif
