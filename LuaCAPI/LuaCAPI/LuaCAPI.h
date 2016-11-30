@@ -14,6 +14,16 @@ extern "C" {
 #include <errno.h>
 #include <math.h>
 #include <ctype.h>
+#include <limits.h>
+#define BITS_PER_WORD  (CHAR_BIT*sizeof(unsigned int))
+#define I_WORD(i)  ((unsigned int)(i) / BITS_PER_WORD)
+#define I_BIT(i) (1 << ((unsigned int)(i) % BITS_PER_WORD))
+
+typedef struct NumArray{
+    int size;
+    unsigned int values[1];
+}NumArray;
+
 /*
 static int l_sin(lua_State *L)
 {
@@ -140,46 +150,46 @@ int luaopen_mylib(lua_State *L)
 
 */
 
-int t_tuple(lua_State *L)
-{
-    int op = luaL_optinteger(L,1,0);
-    if(op == 0)
-    {
-        int i = 0;
-        for(i = 1;!lua_isnone(L,lua_upvalueindex(i));i++)
-        {
-            lua_pushvalue(L,lua_upvalueindex(i));
-        }
-        return i-1;
-    }else
-    {
-        luaL_argcheck(L,0<op,1,"indext out of range");
-        if(lua_isnone(L,lua_upvalueindex(op)))
-        {
-            return 0;
-        }
-        lua_pushvalue(L,lua_upvalueindex(op));
-        return 1;
-    }
-}
+//int t_tuple(lua_State *L)
+//{
+//    int op = luaL_optinteger(L,1,0);
+//    if(op == 0)
+//    {
+//        int i = 0;
+//        for(i = 1;!lua_isnone(L,lua_upvalueindex(i));i++)
+//        {
+//            lua_pushvalue(L,lua_upvalueindex(i));
+//        }
+//        return i-1;
+//    }else
+//    {
+//        luaL_argcheck(L,0<op,1,"indext out of range");
+//        if(lua_isnone(L,lua_upvalueindex(op)))
+//        {
+//            return 0;
+//        }
+//        lua_pushvalue(L,lua_upvalueindex(op));
+//        return 1;
+//    }
+//}
 
-int t_new(lua_State *L)
-{
-    lua_pushcclosure(L,t_tuple,lua_gettop(L));
-    return 1;
-}
+//int t_new(lua_State *L)
+//{
+//    lua_pushcclosure(L,t_tuple,lua_gettop(L));
+//    return 1;
+//}
 
-static const struct luaL_Reg mylib[] = {
-   {"new",t_new},
-    {NULL,NULL}
-};
+//static const struct luaL_Reg mylib[] = {
+//   {"new",t_new},
+//    {NULL,NULL}
+//};
 
-int luaopen_mylib(lua_State *L)
-{
-    lua_newtable(L);
-    luaL_setfuncs(L,mylib,0);
-    return 1;
-}
+//int luaopen_mylib(lua_State *L)
+//{
+//    lua_newtable(L);
+//    luaL_setfuncs(L,mylib,0);
+//    return 1;
+//}
 #ifdef __cplusplus
 }
 #endif
