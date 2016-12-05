@@ -193,36 +193,36 @@ int luaopen_mylib(lua_State *L)
 //}
 
 
-static int newarray(lua_State *L)
-{
-    int i,n;
-    size_t nbytes;
-    NumArray *a;
+//static int newarray(lua_State *L)
+//{
+//    int i,n;
+//    size_t nbytes;
+//    NumArray *a;
 
-    n = luaL_checkinteger(L,1);
-   luaL_argcheck(L,n >=1,1,"invalid size");
-   nbytes = sizeof(NumArray) + I_WORD(n-1) * sizeof(unsigned int);
-   a = (NumArray *)lua_newuserdata(L,nbytes);
+//    n = luaL_checkinteger(L,1);
+//   luaL_argcheck(L,n >=1,1,"invalid size");
+//   nbytes = sizeof(NumArray) + I_WORD(n-1) * sizeof(unsigned int);
+//   a = (NumArray *)lua_newuserdata(L,nbytes);
 
-   a->size = n;
-   for(i = 0;i <= I_WORD(n-1);i++)
-   {
-       a->values[i] = 0;
-   }
+//   a->size = n;
+//   for(i = 0;i <= I_WORD(n-1);i++)
+//   {
+//       a->values[i] = 0;
+//   }
 
-   luaL_getmetatable(L,"LuaBook.array");
-   lua_setmetatable(L,-2);
-   return 1;
-}
+//   luaL_getmetatable(L,"LuaBook.array");
+//   lua_setmetatable(L,-2);
+//   return 1;
+//}
 
-static unsigned int *getindex(lua_State *L,unsigned int* mask)
-{
-    NumArray* a = checkarrary(L);
-    int index = luaL_checkinteger(L,2) - 1;
-     luaL_argcheck(L,0 <= index && index < a->size,2,"index out of range");
-     *mask = I_BIT(index);
-     return &a->values[I_WORD(index)];
-}
+//static unsigned int *getindex(lua_State *L,unsigned int* mask)
+//{
+//    NumArray* a = checkarrary(L);
+//    int index = luaL_checkinteger(L,2) - 1;
+//     luaL_argcheck(L,0 <= index && index < a->size,2,"index out of range");
+//     *mask = I_BIT(index);
+//     return &a->values[I_WORD(index)];
+//}
 
 //static int setarray(lua_State *L)
 //{
@@ -256,51 +256,51 @@ static unsigned int *getindex(lua_State *L,unsigned int* mask)
 //    return 1;
 //}
 
-static int setarray(lua_State *L)
-{
-    unsigned int mask;
-    unsigned int *entry = getindex(L,&mask);
-    luaL_checkany(L,3);
-    if(lua_toboolean(L,3))
-    {
-        *entry |= mask;
-    }else
-    {
-        *entry &= ~mask;
-    }
-    return 0;
-}
+//static int setarray(lua_State *L)
+//{
+//    unsigned int mask;
+//    unsigned int *entry = getindex(L,&mask);
+//    luaL_checkany(L,3);
+//    if(lua_toboolean(L,3))
+//    {
+//        *entry |= mask;
+//    }else
+//    {
+//        *entry &= ~mask;
+//    }
+//    return 0;
+//}
 
 
-static int getarray(lua_State *L)
-{
-    unsigned int mask;
-    unsigned int *entry = getindex(L,&mask);
-    lua_pushboolean(L,*entry & mask);
-    return 1;
-}
+//static int getarray(lua_State *L)
+//{
+//    unsigned int mask;
+//    unsigned int *entry = getindex(L,&mask);
+//    lua_pushboolean(L,*entry & mask);
+//    return 1;
+//}
 
 
 
-static int getsize(lua_State *L)
-{
-//    NumArray *a = (NumArray*)lua_touserdata(L,1);
-//    luaL_argcheck(L, a != NULL,1," ' array' expected");
-    NumArray* a= checkarrary(L);
-    lua_pushinteger(L,a->size);
-    return 1;
-}
-int array2string(lua_State *L)
-{
-    NumArray* a = checkarrary(L);
-    lua_pushfstring(L,"array(%d)",a->size);
-    return 1;
-}
+//static int getsize(lua_State *L)
+//{
+////    NumArray *a = (NumArray*)lua_touserdata(L,1);
+////    luaL_argcheck(L, a != NULL,1," ' array' expected");
+//    NumArray* a= checkarrary(L);
+//    lua_pushinteger(L,a->size);
+//    return 1;
+//}
+//int array2string(lua_State *L)
+//{
+//    NumArray* a = checkarrary(L);
+//    lua_pushfstring(L,"array(%d)",a->size);
+//    return 1;
+//}
 
-static const struct luaL_Reg arrylib_f[] = {
-    {"new",newarray},
-    {NULL,NULL}
-};
+//static const struct luaL_Reg arrylib_f[] = {
+//    {"new",newarray},
+//    {NULL,NULL}
+//};
 
 //static const struct luaL_Reg arrylib_m[] = {
 //    {"set",setarray },
@@ -310,25 +310,85 @@ static const struct luaL_Reg arrylib_f[] = {
 //    {NULL,NULL}
 //};
 
-static const struct luaL_Reg arrylib_m[] = {
-    {"__newindex",setarray },
-    {"__index",getarray},
-    {"__len",getsize},
-    {"__tostring",array2string},
-    {NULL,NULL}
-};
+//static const struct luaL_Reg arrylib_m[] = {
+//    {"__newindex",setarray },
+//    {"__index",getarray},
+//    {"__len",getsize},
+//    {"__tostring",array2string},
+//    {NULL,NULL}
+//};
 
-int luaopen_mylib(lua_State *L)
+//int luaopen_mylib(lua_State *L)
+//{
+//    luaL_newmetatable(L,"LuaBook.array");
+//    lua_pushvalue(L,-1);
+//    lua_setfield(L,-1,"__index");
+//    luaL_setfuncs(L,arrylib_m,0);
+//    lua_newtable(L);
+//    luaL_setfuncs(L,arrylib_f,0);
+//    return 1;
+//}
+
+static int dir_iter(lua_State *L);
+
+static int l_dir(lua_State *L)
 {
-    luaL_newmetatable(L,"LuaBook.array");
-    lua_pushvalue(L,-1);
-    lua_setfield(L,-1,"__index");
-    luaL_setfuncs(L,arrylib_m,0);
-    lua_newtable(L);
-    luaL_setfuncs(L,arrylib_f,0);
+    const char *path = luaL_checkstring(L,1);
+
+    DIR **d = (DIR **)lua_newuserdata(L,sizeof(DIR *));
+
+    luaL_getmetatable(L,"LuaBook.dir");
+    lua_setmetatable(L,-2);
+
+    *d = opendir(path);
+    if(*d == NULL)
+    {
+        luaL_error(L,"cannot open %s: %s",path,strerror(errno));
+    }
+
+    lua_pushcclosure(L,dir_iter,1);
     return 1;
 }
 
+
+static int dir_iter(lua_State *L)
+{
+    DIR *d = *(DIR **)lua_touserdata(L,lua_upvalueindex(1));
+    struct dirent *entry;
+    if((entry = readdir(d)) != NULL)
+    {
+        lua_pushstring(L,entry->d_name);
+        return 1;
+    }else
+   {
+        return 0;
+    }
+}
+
+static int dir_gc(lua_State *L)
+{
+    DIR *d = *(DIR**)lua_touserdata(L,1);
+    if(d)
+    {
+        closedir(d);
+    }
+    return 0;
+}
+
+
+int luaopen_dir(lua_State *L)
+{
+    luaL_newmetatable(L,"LuaBokk.dir");
+
+    lua_pushstring(L,"__gc");
+    lua_pushcfunction(L,dir_gc);
+    lua_settable(L,-3);
+
+    lua_pushcfunction(L,l_dir);
+    lua_setglobal(L,"dir");
+
+    return 0;
+}
 
 #ifdef __cplusplus
 }
