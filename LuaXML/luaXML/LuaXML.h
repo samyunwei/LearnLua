@@ -1,13 +1,17 @@
 #ifndef LUAXML_H
 #define LUAXML_H
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include <stdlib.h>
-#include <lua.h>
+#include <stdio.h>
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+#include <math.h>
 #include <expat.h>
-#include <lauxlib.h>
-
 typedef struct lxp_userdata{
     lua_State *L;
     XML_Parser parser;
@@ -31,7 +35,7 @@ static int lxp_makeparser(lua_State *L)
     lua_setmetatable(L,-2);
 
     p = xpu->parser = XML_ParserCreate(NULL);
-    if(!p)
+   if(!p)
     {
         luaL_error(L,"XML_ParserCreate faild");
     }
@@ -43,15 +47,15 @@ static int lxp_makeparser(lua_State *L)
     XML_SetUserData(p,xpu);
     XML_SetElementHandler(p,f_startElement,f_endElement);
     XML_SetCharacterDataHandler(p,f_CharData);
-    return 1;
+   return 1;
 }
 
 static int lxp_parse(lua_State *L)
 {
-    int status;
-    size_t len;
+   int status;
+   size_t len;
     const char* s;
-    lxp_userdata *xpu;
+   lxp_userdata *xpu;
 
     xpu = (lxp_userdata*)luaL_checkudata(L,1,"Expat");
 
@@ -142,32 +146,33 @@ static int lxp_close(lua_State *L)
 
 
 static const struct luaL_Reg lxp_meths[] = {
-  {"parese",lxp_parse},
+  {"parse",lxp_parse},
   {"close",lxp_close},
   {"__gc",lxp_close},
   {"NULL",NULL}
 };
 
 
-static const struct luaL_Reg lxpfuncs[] = {
+
+
+static const struct luaL_Reg lxp_funcs[] = {
     {"new",lxp_makeparser},
-    {"NULL",NULL}
+    {NULL,NULL}
 };
 
 
 int luaopen_lxp(lua_State *L)
 {
     luaL_newmetatable(L,"Expat");
-
     lua_pushvalue(L,-1);
-    lua_setfield(L,-2,"__index");
-
+    lua_setfield(L,-1,"__index");
     luaL_setfuncs(L,lxp_meths,0);
-
     lua_newtable(L);
-    luaL_setfuncs(L,lxpfuncs,0);
+    luaL_setfuncs(L,lxp_funcs,0);
     return 1;
 }
+
+
 
 #ifdef __cplusplus
 }

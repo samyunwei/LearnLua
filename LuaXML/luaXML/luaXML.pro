@@ -6,7 +6,7 @@
 
 QT       -= core gui
 
-TARGET = luaXML
+TARGET = lxp
 TEMPLATE = lib
 
 DEFINES += LUAXML_LIBRARY
